@@ -3,3 +3,100 @@ title: "Tarea3_HerreraElian"
 format: html
 ---
 
+```{r}
+#| include: false
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+```
+
+
+```{r}
+#| echo: false
+#| results: asis
+
+cat(
+  "RESULTADO_1A = 19\n",
+  "RESULTADO_1B = 2025-02-02\n",
+  "RESULTADO_1C = 32\n",
+  "RESULTADO_2A = PENDIENTE\n",
+  "RESULTADO_2B = PENDIENTE\n",
+  "RESULTADO_2C = PENDIENTE\n",
+  "RESULTADO_2D = PENDIENTE\n",
+  "RESULTADO_3A = PENDIENTE\n",
+  "RESULTADO_3B = PENDIENTE\n",
+  "RESULTADO_3C = PENDIENTE\n",
+  sep = ""
+)
+```
+
+
+# Ejercicio 1:
+
+```{r}
+#| include: false
+source("cod/funciones_tarea3.R")
+
+parametros.tarea3 <- read_delim("config/parametros_tarea3.csv", delim = ";")
+transacciones.2025 <- read_delim("data/transacciones_2025.csv", delim = ";")
+
+ventana <- as.integer(
+  parametros.tarea3$valor[parametros.tarea3$parametro == "ventana"]
+)
+
+k.alerta <- as.numeric(
+  parametros.tarea3$valor[parametros.tarea3$parametro == "k.alerta"]
+)
+```
+
+
+```{r}
+resultados.ej1 <- alerta.movil(transacciones.2025, ventana, k.alerta) 
+
+ans.1a <- sum(resultados.ej1$alerta, na.rm = TRUE)
+ans.1a
+
+ans.1b <- head(resultados.ej1$fecha[resultados.ej1$alerta %in% TRUE], 1)
+ans.1b 
+
+cambios.1c <- alerta.movil(transacciones.2025, 7, 2)
+ans.1c <- sum(cambios.1c$alerta,na.rm = TRUE)
+ans.1c
+
+```
+```{r}
+
+grafico.ej1 <- ggplot(resultados.ej1, aes(x = fecha, y = n.tx)) +
+  geom_line(color = "steelblue", linewidth = 0.6) +
+  geom_point(
+    data = resultados.ej1 |> filter(alerta %in% TRUE),
+    color = "red",
+    size = 2
+  ) +
+  labs(
+    title = "Alertas por ventana móvil - 2025",
+    subtitle = paste("Ventana =", ventana, "| k =", k.alerta),
+    x = "Fecha",
+    y = "Número de transacciones"
+  ) +
+  theme_minimal()
+
+grafico.ej1
+
+ggsave(
+  "info/figuras/grafico_alerta_movil.png",
+  plot = grafico.ej1,
+  width = 10,
+  height = 6,
+  dpi = 300
+)
+
+```
+
+
+# Ejercicio 2:  
+```{r}
+
+```
+
+
